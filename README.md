@@ -21,6 +21,23 @@ To open a vault, the guardians bring their cards (as text or as a photo of the Q
 
 After sealing, use **Print cards, one per page** to give each guardian a paper card with a QR code and plain instructions.
 
+## Open a vault without Lastkey
+
+Lastkey's format is fully documented in [`SPEC.md`](SPEC.md), so a vault never depends on this app surviving. [`recover.py`](recover.py) is a separate implementation written from the spec. It opens a vault from its cards with nothing but Python and the `cryptography` package:
+
+```sh
+pip install cryptography
+python recover.py card1.txt card2.txt
+```
+
+For a time-locked vault, add `--tle path/to/tle` to use drand's official [tle](https://github.com/drand/tlock/releases) tool, or `--export-tlock vault.age` to get a standard tlock file that any tlock tool can decrypt.
+
+[`test-vectors/vectors.json`](test-vectors/vectors.json) holds sample vaults made by Lastkey, including tampered cards that must be refused. Any implementation can check itself against them:
+
+```sh
+python recover.py --check test-vectors/vectors.json
+```
+
 ## Check that your copy is genuine
 
 Every release publishes the SHA-256 fingerprint of `Lastkey.html` in [`docs/SHA256SUMS.txt`](docs/SHA256SUMS.txt). Compare it with your copy before trusting it with anything real.
@@ -57,6 +74,10 @@ powershell -ExecutionPolicy Bypass -File build-standalone.ps1
 This inlines every library and font into `dist/Lastkey.html`, copies it to `docs/` for GitHub Pages, and writes the fingerprint to `docs/SHA256SUMS.txt`. `serve.ps1` serves the folder at http://localhost:8765 for testing.
 
 `lib/prepare-libs.ps1` turns the downloaded vendor files into the embeddable versions. It only needs to run again when a library is updated.
+
+## License
+
+Lastkey is released under the [MIT License](LICENSE).
 
 ## Third-party code
 
